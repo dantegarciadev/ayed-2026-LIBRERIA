@@ -1,9 +1,22 @@
-def cargar_texto(ruta):
-    """Carga secuencial de un .txt: un registro por línea, separado por coma.
-    Devuelve una lista de dicts (E1 puede quedar así)."""
-    raise NotImplementedError
+import csv
+import pathlib
 
+def cargar_texto(ruta="data/canciones.csv"):
+    canciones = []
+    path = pathlib.Path(ruta)
 
-def guardar_texto(ruta, filas, encabezados):
-    """Escribe el catálogo en .txt con la primera línea de encabezados."""
+    if not path.exists():
+        print(f"Error: No se encontró el archivo en {path.resolve()}")
+        return canciones
+
+    with open(path, mode='r', encoding='utf-8') as archivo:
+        lector = csv.DictReader(archivo)
+        for fila in lector:
+            canciones.append(fila)
+
+    return canciones
+
+def guardar_texto(ruta, filas, encabezado):
     raise NotImplementedError
+    
+    
