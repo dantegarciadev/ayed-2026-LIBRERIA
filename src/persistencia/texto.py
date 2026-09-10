@@ -1,7 +1,7 @@
 import csv
 import pathlib
 
-def cargar_texto(ruta="data/canciones.csv"):
+def cargar_texto(ruta="data/canciones.txt"):
     canciones = []
     path = pathlib.Path(ruta)
 
