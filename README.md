@@ -6,11 +6,11 @@ Repositorio del grupo. Partir de este esqueleto. No borrar la estructura de `src
 
 | Nombre | Mail | GitHub |
 | --- | --- | --- |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+| Eber Garcia | zickdante2015@gmail.com | @dantegarciadev |
+| Kain Samaniego | samaniego.py04@gmail.com | @samaniegopy |
 
-**Tema elegido:** Pokédex / Recetario / Biblioteca musical (dejar uno)
+
+**Tema elegido:** Biblioteca musical
 
 ## Cómo ejecutar
 
