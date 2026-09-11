@@ -1,9 +1,8 @@
-from src.persistencia.texto import cargar_texto
+from src.dominio.canciones import CATALOGO
 from src.cli import iniciar_cli
 
 def main():
-    catalogo = cargar_texto("data/canciones.txt")
-    iniciar_cli(catalogo)
+    iniciar_cli(CATALOGO)
 
 if __name__ == "__main__":
     main()
