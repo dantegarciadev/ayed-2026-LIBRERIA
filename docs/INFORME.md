@@ -3,37 +3,43 @@
 ## 1. Grupo y tema
 
 - **Tema:** Biblioteca Musical
-- **Por qué lo eligieron:** Elegimos este tema porque, a diferencia de opciones más comunes como Pokédex, nos pareció un dominio con mayor flexibilidad. Una colección de música nos permite experimentar con diversas funciones y atributos variados (artistas, géneros, duraciones). Además, resulta muy práctico para modelar de forma natural las estructuras que pide la materia, como listas de reproducción, historial (pilas) y colas de reproducción.
+- **Por qué lo eligieron:** Elegimos este tema porque, a diferencia de opciones más comunes como Pokédex, nos pareció un dominio con mayor flexibilidad. Una colección de música nos permite experimentar con diversas funciones y atributos variados (artistas, géneros, duraciones). Además, resulta muy práctico para modelar  las estructuras como, listas de reproducción, historial (pilas) y colas de reproducción.
 
 
 ## 2. Modelo
 
-Un ítem del catálogo representa una canción individual del archivo `canciones.txt`, que es almacenada temporalmente como un diccionario de Python con los campos `id`, `titulo`, `artista`, `album`, `genero`, `anio` y `duracion_seg`.
+Un ítem del catálogo representa una canción individual definida dentro del módulo de dominio, la cual es representada como un diccionario de Python con los campos `id`, `titulo`, `artista`, `album`, `genero`, `anio` y `duracion_seg`.
 
 ### Mutabilidad
 
 - **Inmutables:**
- - `id` (cadena/entero): Identificador único del registro que no debe cambiar.
- - `titulo`, `artista`, `album`, `genero` (str): Las cadenas de texto son inmutables en Python; cualquier modificación genera un nuevo objeto.
- - `anio`, `duracion_seg` (int): Los tipos de datos numéricos básicos son inmutables por definición.
+ - `id` (str/int): Identificador único de la canción. Se define inmutable para garantizar la integridad referencial y evitar que la clave primaria del ítem cambie accidentalmente, lo que rompería las búsquedas.
+ - `titulo`, `artista`, `album`, `genero` (str): Las cadenas de texto son inmutables en Python. Elegirlas así asegura la integridad de los metadatos base, evitando efectos secundarios o modificaciones colaterales no deseadas en memoria durante la ejecución.
+ - `anio`, `duracion_seg` (int): Tipos numéricos básicos e inmutables por definición del lenguaje, ideales para proteger los valores cuantitativos de la canción.
 - **Mutables:**
-  - `cancion` (dict): Contenedor de datos por tema que admite cambios en sus valores.
-  - `catalogo` (list): Lista lineal completa de canciones cargadas desde el archivo, permite operaciones de inserción, eliminación y reordenamiento.
-
+  - `cancion` (dict): Diccionario dinámico que representa la entidad. Permite modificar atributos o corregir datos sin necesidad de recrear toda la estructura del tema en memoria.
+  - `catalogo` (list): Colección lineal mutable. Se elige una lista para permitir la inserción, eliminación y reordenamiento dinámico de los temas dentro del sistema.
 ### Relación entre componentes del sistema
 
 ```text
-[ Archivo data/canciones.txt ]
-               │
-               ▼  (Carga secuencial)
-       [ Catálogo General ]
-               │
-   ┌───────────┼───────────┐
-   ▼           ▼           ▼
-[Colección]  [ Pila ]   [ Cola ]
-Principal  Historial  Reproducción
++-------------------------------------------------------------+
+|                      BIBLIOTECA MUSICAL                     |
++-------------------------------------------------------------+
+                               |
+                               v
+               +-------------------------------+
+               |      Catálogo (list/dict)     |
+               +-------------------------------+
+                               |
+        +----------------------+----------------------+
+        |                      |                      |
+        v                      v                      v
++---------------+      +---------------+      +---------------+
+| Colección     |      | Historial     |      | Cola de       |
+| Principal     |      | (Pila - TADS) |      | Reproducción  |
+| (Listas)      |      +---------------+      | (Cola - TADS) |
++---------------+                             +---------------+
 ```
-
 ## 3. Recursión (E2)
 
 - Función:
