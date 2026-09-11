@@ -6,7 +6,7 @@ Fecha de esta versión del archivo:
 
 | Entrega | Fecha | Herramienta (ChatGPT, Cursor, Copilot, otra) | Para qué (diseño, código, debug, docs) | Qué pegaron o generaron | Qué reescribieron / revisaron a mano | Integrante |
 | --- | --- | --- | --- | --- | --- | --- |
-| E1 | 10/09/2026 | Gemini | Código y docs | Estructura del menú en `cli.py` y el diagrama ASCII para `INFORME.md`  | Lógica de manejo de valores por defecto en `cli.py`, mensajes en pantalla y ajuste de relaciones en el diagrama ASCII | Kain Samaniego |
+| E1 | 10/09/2026 | Gemini | Diseño, código y docs | Estructura del menú en `cli.py`, el diagrama ASCII para `INFORME.md` e identificación teórica de mutables e inmutables | Lógica de manejo de valores por defecto en `cli.py`, mensajes en pantalla, relaciones del diagrama ASCII y redacción final de la justificación de mutabilidad | Kain Samaniego |
 | E2 |  |  |  |  |  |  |
 | E3 |  |  |  |  |  |  |
 | E4 |  |  |  |  |  |  |
