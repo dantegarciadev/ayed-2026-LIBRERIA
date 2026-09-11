@@ -3,7 +3,8 @@
 ## 1. Grupo y tema
 
 - **Tema:** Biblioteca Musical
-- **Por qué lo eligieron:** Ellegimos este tema porque...
+- **Por qué lo eligieron:** Elegimos este tema porque, a diferencia de opciones más comunes como Pokédex, nos pareció un dominio con mayor flexibilidad. Una colección de música nos permite experimentar con diversas funciones y atributos variados (artistas, géneros, duraciones). Además, resulta muy práctico para modelar de forma natural las estructuras que pide la materia, como listas de reproducción, historial (pilas) y colas de reproducción.
+
 
 ## 2. Modelo
 
