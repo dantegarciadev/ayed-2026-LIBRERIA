@@ -1,18 +1,36 @@
 # Informe del TP
 
-Completar y hacer crecer en cada entrega. No hace falta prosa larga: oraciones claras y tablas.
-
 ## 1. Grupo y tema
 
-- Tema:
-- Por qué lo eligieron (5–8 líneas):
+- **Tema:** Biblioteca Musical
+- **Por qué lo eligieron:** Ellegimos este tema porque...
 
 ## 2. Modelo
 
-Qué es un ítem del catálogo. Qué es mutable y qué no (E1). Cómo se relacionan catálogo, colección principal, pila y cola.
+Un ítem del catálogo representa una canción individual del archivo `canciones.txt`, que es almacenada temporalmente como un diccionario de Python con los campos `id`, `titulo`, `artista`, `album`, `genero`, `anio` y `duracion_seg`.
+
+### Mutabilidad
+
+- **Inmutables:**
+ - `id` (cadena/entero): Identificador único del registro que no debe cambiar.
+ - `titulo`, `artista`, `album`, `genero` (str): Las cadenas de texto son inmutables en Python; cualquier modificación genera un nuevo objeto.
+ - `anio`, `duracion_seg` (int): Los tipos de datos numéricos básicos son inmutables por definición.
+- **Mutables:**
+  - `cancion` (dict): Contenedor de datos por tema que admite cambios en sus valores.
+  - `catalogo` (list): Lista lineal completa de canciones cargadas desde el archivo, permite operaciones de inserción, eliminación y reordenamiento.
+
+### Relación entre componentes del sistema
 
 ```text
-(pueden pegar un diagrama ASCII o una lista de clases)
+[ Archivo data/canciones.txt ]
+               │
+               ▼  (Carga secuencial)
+       [ Catálogo General ]
+               │
+   ┌───────────┼───────────┐
+   ▼           ▼           ▼
+[Colección]  [ Pila ]   [ Cola ]
+Principal  Historial  Reproducción
 ```
 
 ## 3. Recursión (E2)
