@@ -48,19 +48,17 @@ Un ítem del catálogo representa una canción individual definida dentro del m�
 
 **Caso recursivo:** `list(directas) + obtener_versiones_derivadas(v)`
 
+---
 
-**Traza para "De Música Ligera" (ID 1):** Según el catálogo, ID 1 tiene versión directa ID 2 (Live), e ID 2 tiene versión directa ID 3 (Remix).
+**Traza para "De Música Ligera" (ID 1):** Según el catálogo y mapa de versiones, la canción ID 1 deriva en la canción ID 62 ("De Música Ligera - Unplugged").
 
-* **Llamada 1:** `obtener_versiones_derivadas(1)` $\rightarrow$ tiene versión directa (ID 2)
-  $\rightarrow$ devuelve `[2] + obtener_versiones_derivadas(2)`
+* **Llamada 1:** `obtener_versiones_derivadas(1)` $\rightarrow$ tiene versión directa (ID 62)
+  $\rightarrow$ devuelve `[62] + obtener_versiones_derivadas(62)`
 
-* **Llamada 2:** `obtener_versiones_derivadas(2)` $\rightarrow$ tiene versión directa (ID 3)
-  $\rightarrow$ devuelve `[3] + obtener_versiones_derivadas(3)`
-
-* **Llamada 3:** `obtener_versiones_derivadas(3)` $\rightarrow$ NO tiene versiones derivadas (caso base)
+* **Llamada 2:** `obtener_versiones_derivadas(62)` $\rightarrow$ NO tiene versiones derivadas (caso base)
   $\rightarrow$ devuelve `[]`
 
-**Resultado final:** `[2] + [3] + [] = [2, 3]`
+**Resultado final:** `[62] + [] = [62]`
 
 ## 4. TADs (E3)
 
