@@ -49,7 +49,6 @@ def iniciar_cli():
                 cancion = biblioteca.buscar_por_id(int(id_ingresado))
 
             if cancion:
-                # Se envía el ID tal cual lo tiene el objeto
                 ids_derivados = biblioteca.obtener_versiones_derivadas(cancion.id)
                 print(f"\n--- Versiones derivadas de '{cancion.titulo}' (ID {cancion.id}) ---")
                 if ids_derivados:
