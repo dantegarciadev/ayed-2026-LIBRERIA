@@ -33,13 +33,22 @@ class Biblioteca:
         return self.catalogo
 
     def buscar_por_id(self, id_cancion):
+        """Busca una canción comparando ambos IDs como string para evitar fallos de tipo."""
         for c in self.catalogo:
-            if c.id == int(id_cancion):
+            if str(c.id) == str(id_cancion):
                 return c
         return None
 
     def buscar_versiones_directas(self, id_cancion):
-        return self.versiones_map.get(int(id_cancion), [])
+        """Busca versiones directas asegurando coincidencia de tipo entero o string."""
+        try:
+            clave_int = int(id_cancion)
+            if clave_int in self.versiones_map:
+                return self.versiones_map[clave_int]
+        except (ValueError, TypeError):
+            pass
+        
+        return self.versiones_map.get(str(id_cancion), [])
 
     def obtener_versiones_derivadas(self, id_cancion):
         """Función recursiva para obtener derivados."""
