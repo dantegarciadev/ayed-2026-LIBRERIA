@@ -46,5 +46,6 @@ CATALOGO = [
     }
 ]
 
+
 def obtener_catalogo():
     return CATALOGO
