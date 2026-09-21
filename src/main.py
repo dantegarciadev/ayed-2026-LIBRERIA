@@ -1,8 +1,7 @@
-from src.dominio.canciones import CATALOGO
 from src.cli import iniciar_cli
 
 def main():
-    iniciar_cli(CATALOGO)
+    iniciar_cli()
 
 if __name__ == "__main__":
     main()

@@ -42,10 +42,23 @@ Un ítem del catálogo representa una canción individual definida dentro del m�
 ```
 ## 3. Recursión (E2)
 
-- Función:
-- Caso base:
-- Caso recursivo:
-- Traza de un ejemplo real del dataset:
+**Función:** `obtener_versiones_derivadas(id_cancion)`
+
+**Caso base:** Si la canción no tiene versiones ni derivados directos (`directas == []`) $\rightarrow$ devolver `[]`.
+
+**Caso recursivo:** `list(directas) + obtener_versiones_derivadas(v)`
+
+---
+
+**Traza para "De Música Ligera" (ID 1):** Según el catálogo y mapa de versiones, la canción ID 1 deriva en la canción ID 62 ("De Música Ligera - Unplugged").
+
+* **Llamada 1:** `obtener_versiones_derivadas(1)` $\rightarrow$ tiene versión directa (ID 62)
+  $\rightarrow$ devuelve `[62] + obtener_versiones_derivadas(62)`
+
+* **Llamada 2:** `obtener_versiones_derivadas(62)` $\rightarrow$ NO tiene versiones derivadas (caso base)
+  $\rightarrow$ devuelve `[]`
+
+**Resultado final:** `[62] + [] = [62]`
 
 ## 4. TADs (E3)
 
