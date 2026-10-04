@@ -1,14 +1,24 @@
 from src.dominio.biblioteca import Biblioteca
+from src.dominio.playlist import Playlist
+from src.tads.pila import Pila
+from src.tads.cola import Cola
+from src.excepciones import ColeccionLlenaError, PilaVaciaError, ColaVaciaError
 
 def mostrar_menu():
     print("\n" + "="*35)
-    print("   BIBLIOTECA MUSICAL — MENÚ CLI")
+    print("    BIBLIOTECA MUSICAL — MENÚ CLI")
     print("="*35)
     print("1. Listar catálogo de canciones")
     print("2. Ver detalle de una canción")
     print("3. Ver versiones derivadas")
-    print("4. Salir")
-
+    print("4. Agregar canción a la playlist")
+    print("5. Ver playlist")
+    print("6. Reproducir canción (Apilar en historial)")
+    print("7. Deshacer última reproducción")
+    print("8. Encolar canción para reproducción")
+    print("9. Sonar siguiente canción de la cola")
+    print("10. Salir")
+    
 def listar_catalogo(biblioteca):
     catalogo = biblioteca.obtener_catalogo()
     if not catalogo:
@@ -23,6 +33,9 @@ def listar_catalogo(biblioteca):
 
 def iniciar_cli():
     biblioteca = Biblioteca()
+    playlist = Playlist(tope=6)
+    historial = Pila()
+    cola_repro = Cola()
     
     while True:
         mostrar_menu()
@@ -64,6 +77,62 @@ def iniciar_cli():
                 print("\n Canción no encontrada.")
 
         elif opcion == "4":
+            id_ingresado = input("ID de canción a agregar a la playlist: ").strip()
+            cancion = biblioteca.buscar_por_id(id_ingresado)
+            if not cancion and id_ingresado.isdigit():
+                cancion = biblioteca.buscar_por_id(int(id_ingresado))
+
+            if cancion:
+                try:
+                    playlist.agregar(cancion)
+                    print(f" Agregada a playlist: {cancion.titulo}")
+                except ColeccionLlenaError as e:
+                    print(f" Error: {e}")
+            else:
+                print("\n Canción no encontrada.")
+
+        elif opcion == "5":
+            playlist.listar()
+
+        elif opcion == "6":
+            id_ingresado = input("ID de canción a reproducir: ").strip()
+            cancion = biblioteca.buscar_por_id(id_ingresado)
+            if not cancion and id_ingresado.isdigit():
+                cancion = biblioteca.buscar_por_id(int(id_ingresado))
+
+            if cancion:
+                historial.apilar(cancion)
+                print(f" Reproduciendo: {cancion.titulo}")
+            else:
+                print("\n Canción no encontrada.")
+
+        elif opcion == "7":
+            try:
+                deshecha = historial.desapilar()
+                print(f" Deshecho: Se eliminó '{deshecha.titulo}' del historial.")
+            except PilaVaciaError as e:
+                print(f" Error: {e}")
+
+        elif opcion == "8":
+            id_ingresado = input("ID de canción a encolar: ").strip()
+            cancion = biblioteca.buscar_por_id(id_ingresado)
+            if not cancion and id_ingresado.isdigit():
+                cancion = biblioteca.buscar_por_id(int(id_ingresado))
+
+            if cancion:
+                cola_repro.encolar(cancion)
+                print(f" ➕ Encolada: {cancion.titulo}")
+            else:
+                print("\n Canción no encontrada.")
+
+        elif opcion == "9":
+            try:
+                siguiente = cola_repro.desencolar()
+                print(f" Sonando desde la cola: {siguiente.titulo}")
+            except ColaVaciaError as e:
+                print(f" Error: {e}")
+
+        elif opcion == "10":
             print("\n¡Gracias por usar la Biblioteca Musical!")
             break
 
