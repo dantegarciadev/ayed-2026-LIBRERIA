@@ -8,7 +8,7 @@ Fecha de esta versión del archivo:
 | --- | --- | --- | --- | --- | --- | --- |
 | E1 | 10/09/2026 | Gemini | Diseño, código y docs | Estructura del menú en `cli.py`, el diagrama ASCII para `INFORME.md` e identificación teórica de mutables e inmutables | Lógica de manejo de valores por defecto en `cli.py`, mensajes en pantalla, relaciones del diagrama ASCII y redacción final de la justificación de mutabilidad | Kain Samaniego |
 | E2 | 20/09/2026 | Gemini | Código y debug | Integración de la Opción 3 en `cli.py` y método recursivo en  `Biblioteca` | Modificación del ingreso por ID, mensajes de caso base y adaptación de los nombres de los métodos llamados | Kain Samaniego |
-| E3 |  |  |  |  |  |  |
+| E3 | 04/10/2026 | Gemini | Diseño, código y docs | Implementación de `Playlist` en `playlist.py` (colección con tope), estructuras TADs (`ListaEnlazada`, `Pila`, `Cola`) | Adaptación de validaciones de ID, mensajes de error en CLI y redacción final de la documentación | Kain Samaniego |
 | E4 |  |  |  |  |  |  |
 | E5 |  |  |  |  |  |  |
 | E6 |  |  |  |  |  |  |
