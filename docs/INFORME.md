@@ -68,11 +68,11 @@ Un ítem del catálogo representa una canción individual definida dentro del m�
 | **Pila** | `apilar`, `desapilar`, `ver_tope`, `esta_vacia` | Estructura LIFO. Tanto el apilado como el desapilado ocurren exclusivamente por la cabeza de la `ListaEnlazada` interna, garantizando un acceso $O(1)$. |
 | **Cola** | `encolar`, `desencolar`, `ver_frente`, `esta_vacia` | Estructura FIFO. La inserción de elementos se realiza al final de la `ListaEnlazada` interna y la extracción se hace siempre desde la cabeza. |
 
-Dónde se utiliza cada estructura en el dominio
-ListaEnlazada: Es la estructura principal que se utiliza como base para implementar la Pila y la Cola. También se utiliza para almacenar las canciones de la Playlist, con una capacidad máxima de 6 canciones (_tope = 6). Además, permite recorrer sus elementos mediante su propio iterador (__iter__).
-Pila: Se utiliza para mantener el historial de reproducción. Cada canción que se reproduce se agrega mediante apilar, quedando en la parte superior. Si el usuario selecciona "Deshacer última reproducción", se utiliza desapilar para quitar la canción reproducida más recientemente, siguiendo el principio LIFO.
-Cola: Se utiliza para administrar las canciones pendientes de reproducción. Las canciones se agregan mediante encolar según el orden en que se solicitan y se reproducen mediante desencolar, respetando el principio FIFO.
+### Dónde se utiliza cada estructura en el dominio
 
+* **`ListaEnlazada`:** Es la estructura principal que se utiliza como base para implementar la `Pila` y la `Cola`. También se utiliza para almacenar las canciones de la `Playlist`, con una capacidad máxima de 6 canciones (`_tope = 6`). Además, permite recorrer sus elementos mediante su propio iterador (`__iter__`).
+* **`Pila`:** Se utiliza para mantener el historial de reproducción. Cada canción que se reproduce se agrega mediante `apilar`, quedando en la parte superior. Si el usuario selecciona *"Deshacer última reproducción"*, se utiliza `desapilar` para quitar la canción reproducida más recientemente, siguiendo el principio LIFO.
+* **`Cola`:** Se utiliza para administrar las canciones pendientes de reproducción. Las canciones se agregan mediante `encolar` según el orden en que se solicitan y se reproducen mediante `desencolar`, respetando el principio FIFO.
 ## 5. Complejidad (E4)
 
 | Operación | Tiempo | Espacio | Por qué |
