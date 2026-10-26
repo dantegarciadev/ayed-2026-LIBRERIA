@@ -75,9 +75,14 @@ Un ítem del catálogo representa una canción individual definida dentro del m�
 * **`Cola`:** Se utiliza para administrar las canciones pendientes de reproducción. Las canciones se agregan mediante `encolar` según el orden en que se solicitan y se reproducen mediante `desencolar`, respetando el principio FIFO.
 ## 5. Complejidad (E4)
 
-| Operación | Tiempo | Espacio | Por qué |
-| --- | --- | --- | --- |
-|  |  |  |  |
+| Operación | Tiempo (Peor) | Tiempo (Mejor)| Espacio | Por qué |
+| :--- | :--- | :--- | :--- | :--- |
+| **Listar catálogo** | $O(n)$ | $O(n)$ | $O(1)$ | Recorre todos los elementos del catálogo uno por uno con el iterador de la lista. |
+| **Búsqueda lineal** | $O(n)$ | $O(1)$ | $O(1)$ | Va mirando elemento por elemento en un bucle `for` hasta encontrar la canción o llegar al final. |
+| **Búsqueda binaria** | $O(\log n)$ | $O(1)$ | $O(1)$ | Necesita que la lista esté ordenada. En cada paso calcula el punto medio y descarta la mitad que no sirve. |
+| **Ordenar por selección** | $O(n^2)$ | $O(n^2)$ | $O(1)$ | Tiene dos bucles anidados. Hace comparaciones e intercambios de forma cuadrática siempre, esté o no ordenada. |
+| **Ordenar por inserción** | $O(n^2)$ | $O(n)$ | $O(1)$ | Si ya está ordenada hace 1 sola comparación por elemento ($O(n)$); si está al revés, tiene que desplazar todo hacia atrás ($O(n^2)$). |
+| **Ver detalle de un ítem** | $O(n)$ | $O(1)$ | $O(1)$ | Recorre la colección hasta encontrar la coincidencia por ID. |
 
 Mediciones (`time.perf_counter`):
 
