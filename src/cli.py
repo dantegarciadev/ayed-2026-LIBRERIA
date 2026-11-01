@@ -3,6 +3,9 @@ from src.dominio.playlist import Playlist
 from src.tads.pila import Pila
 from src.tads.cola import Cola
 from src.excepciones import ColeccionLlenaError, PilaVaciaError, ColaVaciaError
+from src.algoritmos.busqueda import busqueda_lineal, busqueda_binaria 
+from src.algoritmos.ordenamiento import ordenar_seleccion, ordenar_insercion 
+
 
 def mostrar_menu():
     print("\n" + "="*35)
@@ -16,8 +19,10 @@ def mostrar_menu():
     print("6. Reproducir canción (Apilar en historial)")
     print("7. Deshacer última reproducción")
     print("8. Encolar canción para reproducción")
-    print("9. Sonar siguiente canción de la cola")
-    print("10. Salir")
+    print("9. Sonar siguiente canción de la cola")            
+    print("10. Buscar canción por título")
+    print("11. Ordenar catálogo")
+    print("12. Salir")
     
 def listar_catalogo(biblioteca):
     catalogo = biblioteca.obtener_catalogo()
@@ -36,6 +41,7 @@ def iniciar_cli():
     playlist = Playlist(tope=6)
     historial = Pila()
     cola_repro = Cola()
+    orden_actual =  None
     
     while True:
         mostrar_menu()
@@ -133,8 +139,75 @@ def iniciar_cli():
                 print(f" Error: {e}")
 
         elif opcion == "10":
+            print("\nBuscar por título:")
+            print("1. Búsqueda lineal")
+            print("2. Búsqueda binaria")
+
+            metodo = input("Seleccione el método: ").strip()
+
+            if metodo not in ("1", "2"):
+                print("\nOpción no válida.")
+                continue
+
+            titulo = input("Ingrese el título: ").strip()
+            catalogo = biblioteca.obtener_catalogo()
+
+            if metodo == "1":
+                cancion = busqueda_lineal(
+                    catalogo, titulo, lambda c: c.titulo
+                )
+
+            elif metodo == "2":
+                ordenar_insercion(catalogo, lambda c: c.titulo)
+                print(
+                    "\nCatálogo ordenado por título; "
+                    "usando búsqueda binaria."
+                )
+                cancion = busqueda_binaria(
+                    catalogo, titulo, lambda c: c.titulo
+                )
+
+            if cancion:
+                print(cancion.resumen())
+            else:
+                print("\nCanción no encontrada.")
+
+        elif opcion == "11":
+            print("\nOrdenar por:")
+            print("1. Título")
+            print("2. Duración")
+
+            criterio = input("Seleccione el criterio: ").strip()
+
+            if criterio == "1":
+                obtener_clave = lambda c: c.titulo
+            elif criterio == "2":
+                obtener_clave = lambda c: c.duracion_seg
+            else:
+                print("\nOpción no válida.")
+                continue
+
+            print("\nAlgoritmo:")
+            print("1. Selección")
+            print("2. Inserción")
+
+            algoritmo = input("Seleccione el algoritmo: ").strip()
+            catalogo = biblioteca.obtener_catalogo()
+
+            if algoritmo == "1":
+                ordenar_seleccion(catalogo, obtener_clave)
+            elif algoritmo == "2":
+                ordenar_insercion(catalogo, obtener_clave)
+            else:
+                print("\nOpción no válida.")
+                continue
+
+            print("\nCatálogo ordenado.")
+
+        elif opcion == "12":
             print("\n¡Gracias por usar la Biblioteca Musical!")
             break
+        
 
         else:
             print("\n Opción no válida. Ingrese un número de la lista.")

@@ -9,14 +9,14 @@ def busqueda_lineal(coleccion, clave, obtener_clave=None):
 
 def busqueda_binaria(coleccion_ordenada, clave, obtener_clave):
     izq = 0
-    der = len(coleccion) - 1
+    der = len(coleccion_ordenada) - 1
 
     while izq <= der:
         medio = (izq + der) // 2
-        valor = obtener_clave(coleccion[medio])
+        valor = obtener_clave(coleccion_ordenada[medio])
 
         if valor == clave:
-            return coleccion[medio]
+            return coleccion_ordenada[medio]
         elif valor < clave:
             izq = medio + 1
         else:

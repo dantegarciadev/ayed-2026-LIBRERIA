@@ -20,10 +20,10 @@ Mínimos: 8 casos escritos en E2; ejecutados en E3; 15 de regresión en E6 (pila
 | P10 | E3 | Desapilar historial vacío | Opción 7 sin reproducciones | excepción propia, menú sigue | pasa | Lanza PilaVaciaError sin interrupción |
 | P11 | E3 | Desencolar cola vacía | Opción 9 sin canciones encoladas | excepción propia, menú sigue | pasa | Lanza ColaVaciaError sin interrupción |
 | P12 | E3 | Listar colección con el iterador | Opción 5 con 2+ canciones | el orden coincide con las inserciones | pasa | Recorre mediante for usando el iterador |
-| P13 | E4 | Búsqueda lineal de un nombre que existe | | lo encuentra | no corrido | Corresponde a E4 |
-| P14 | E4 | Búsqueda lineal de un nombre que no existe | | no encontrado, sin traceback | no corrido | Corresponde a E4 |
-| P15 | E4 | Búsqueda binaria con catálogo desordenado | | avisa o reordena; no da un falso hit | no corrido | Corresponde a E4 |
-| P16 | E4 | Ordenar por un criterio y después por otro | | el orden cambia | no corrido | Corresponde a E4 |
+| P13 | E4 | Elegir opción 10, método 1 e ingresar el título | Crimen | Encuentra y muestra la canción | pasa | Muestra la canción ID 4 mediante búsqueda lineal |
+| P14 | E4 | Elegir opción 10, método 1 e ingresar un título inexistente | Cancion inexistente | Muestra "Canción no encontrada", sin traceback; el menú continúa | pasa | La búsqueda termina sin coincidencias y permite seguir usando el menú |
+| P15 | E4 | Iniciar el programa sin ordenar; elegir opción 10, método 2 e ingresar el título | Crimen | Avisa que ordena por título y encuentra la canción mediante búsqueda binaria | pasa | Muestra el aviso de ordenamiento y la canción ID 4 |
+| P16 | E4 | Elegir opción 11, criterio 1, algoritmo 1; listar con opción 1. Luego elegir opción 11, criterio 2, algoritmo 2 y volver a listar | Título con selección; duración con inserción | El catálogo queda ordenado ascendentemente por cada criterio y cambia el orden del listado | pasa | Se comprueba el resultado de ambos ordenamientos mediante la opción 1 |
 | P17 | E5 | Guardar texto (`.txt`), salir, volver a entrar | | los datos siguen | no corrido | Corresponde a E5 |
 | P18 | E5 | Guardar binario y modificar un registro por id | | al recargar, ese campo cambió | no corrido | Corresponde a E5 |
 | P19 | E5 | Abrir un binario truncado o con magia mala | archivo basura | excepción de archivo inválido | no corrido | Corresponde a E5 |

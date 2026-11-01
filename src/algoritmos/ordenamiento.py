@@ -1,4 +1,4 @@
-def ordenar_seleccion(coleccion, clave):
+def ordenar_seleccion(coleccion, obtener_clave):
     """Ordenamiento por selección. Devuelve una nueva secuencia, no usa sorted."""
     n = len(coleccion)
     for i in range(n - 1):
@@ -9,7 +9,7 @@ def ordenar_seleccion(coleccion, clave):
         coleccion[i], coleccion[pos_min] = coleccion[pos_min], coleccion[i]
     return coleccion
 
-def ordenar_insercion(coleccion, clave):
+def ordenar_insercion(coleccion, obtener_clave):
     """Ordenamiento por inserción. Devuelve una nueva secuencia, no usa sorted."""
     for i in range(1, len(coleccion)):
         actual = coleccion[i]
