@@ -1,16 +1,37 @@
 from src.dominio.biblioteca import Biblioteca
+from src.dominio.cancion import Cancion
 from src.dominio.playlist import Playlist
 from src.tads.pila import Pila
 from src.tads.cola import Cola
-from src.excepciones import ColeccionLlenaError, PilaVaciaError, ColaVaciaError
-from src.algoritmos.busqueda import busqueda_lineal, busqueda_binaria 
-from src.algoritmos.ordenamiento import ordenar_seleccion, ordenar_insercion 
+from src.excepciones import (
+    ColeccionLlenaError,
+    PilaVaciaError,
+    ColaVaciaError,
+    ArchivoInvalidoError,
+    ItemNoEncontradoError,
+)
+from src.algoritmos.busqueda import busqueda_lineal, busqueda_binaria
+from src.algoritmos.ordenamiento import ordenar_seleccion, ordenar_insercion
+from src.persistencia.texto import (
+    RUTA_TXT,
+    ENCABEZADO_ESPERADO,
+    cargar_texto,
+    guardar_texto,
+)
+from src.persistencia.binario import (
+    RUTA_BIN,
+    guardar_binario,
+    cargar_binario,
+    actualizar_registro,
+    alta_binario,
+    baja_binario,
+)
 
 
 def mostrar_menu():
-    print("\n" + "="*35)
+    print("\n" + "=" * 35)
     print("    BIBLIOTECA MUSICAL — MENÚ CLI")
-    print("="*35)
+    print("=" * 35)
     print("1. Listar catálogo de canciones")
     print("2. Ver detalle de una canción")
     print("3. Ver versiones derivadas")
@@ -19,11 +40,36 @@ def mostrar_menu():
     print("6. Reproducir canción (Apilar en historial)")
     print("7. Deshacer última reproducción")
     print("8. Encolar canción para reproducción")
-    print("9. Sonar siguiente canción de la cola")            
+    print("9. Sonar siguiente canción de la cola")
     print("10. Buscar canción por título")
     print("11. Ordenar catálogo")
-    print("12. Salir")
-    
+    print("12. Gestionar catálogo (Alta / Baja / Modificación)")
+    print("13. Guardar / Cargar archivos (.txt y .bin)")
+    print("14. Salir")
+
+
+def catalogo_a_filas(catalogo):
+    filas = []
+    for c in catalogo:
+        filas.append({
+            "id": c.id,
+            "titulo": c.titulo,
+            "artista": c.artista,
+            "album": c.album,
+            "genero": c.genero,
+            "anio": c.anio,
+            "duracion_seg": c.duracion_seg,
+        })
+    return filas
+
+
+def posicion_del_id(catalogo, id_buscado):
+    for pos, c in enumerate(catalogo):
+        if int(c.id) == int(id_buscado):
+            return pos
+    raise ItemNoEncontradoError(f"No hay canción con ID {id_buscado}.")
+
+
 def listar_catalogo(biblioteca):
     catalogo = biblioteca.obtener_catalogo()
     if not catalogo:
@@ -33,16 +79,16 @@ def listar_catalogo(biblioteca):
     print("\n--- CATÁLOGO DE CANCIONES ---")
     for cancion in catalogo:
         print(cancion.resumen())
-        
+
     print(f"\nTotal de canciones cargadas: {len(catalogo)}")
+
 
 def iniciar_cli():
     biblioteca = Biblioteca()
     playlist = Playlist(tope=6)
     historial = Pila()
     cola_repro = Cola()
-    orden_actual =  None
-    
+
     while True:
         mostrar_menu()
         opcion = input("\nSeleccione una opción: ").strip()
@@ -57,7 +103,12 @@ def iniciar_cli():
                 cancion = biblioteca.buscar_por_id(int(id_ingresado))
 
             if cancion:
-                print(f"\n[DETALLE] ID: {cancion.id} | Título: {cancion.titulo} | Artista: {cancion.artista} | Álbum: {cancion.album} | Año: {cancion.anio} | Género: {cancion.genero} | Duración: {cancion.duracion_seg}s")
+                print(
+                    f"\n[DETALLE] ID: {cancion.id} | Título: {cancion.titulo} | "
+                    f"Artista: {cancion.artista} | Álbum: {cancion.album} | "
+                    f"Año: {cancion.anio} | Género: {cancion.genero} | "
+                    f"Duración: {cancion.duracion_seg}s"
+                )
             else:
                 print("\n Canción no encontrada.")
 
@@ -127,7 +178,7 @@ def iniciar_cli():
 
             if cancion:
                 cola_repro.encolar(cancion)
-                print(f" ➕ Encolada: {cancion.titulo}")
+                print(f" Encolada: {cancion.titulo}")
             else:
                 print("\n Canción no encontrada.")
 
@@ -153,19 +204,12 @@ def iniciar_cli():
             catalogo = biblioteca.obtener_catalogo()
 
             if metodo == "1":
-                cancion = busqueda_lineal(
-                    catalogo, titulo, lambda c: c.titulo
-                )
+                cancion = busqueda_lineal(catalogo, titulo, lambda c: c.titulo)
 
             elif metodo == "2":
                 ordenar_insercion(catalogo, lambda c: c.titulo)
-                print(
-                    "\nCatálogo ordenado por título; "
-                    "usando búsqueda binaria."
-                )
-                cancion = busqueda_binaria(
-                    catalogo, titulo, lambda c: c.titulo
-                )
+                print("\nCatálogo ordenado por título; usando búsqueda binaria.")
+                cancion = busqueda_binaria(catalogo, titulo, lambda c: c.titulo)
 
             if cancion:
                 print(cancion.resumen())
@@ -202,12 +246,110 @@ def iniciar_cli():
                 print("\nOpción no válida.")
                 continue
 
-            print("\nCatálogo ordenado.")
+            guardar_texto(RUTA_TXT, catalogo_a_filas(catalogo), ENCABEZADO_ESPERADO)
+            if RUTA_BIN.exists():
+                guardar_binario(RUTA_BIN, catalogo)
+
+            print("\nCatálogo ordenado y guardado.")
 
         elif opcion == "12":
+            print("\n--- GESTIÓN DE CATÁLOGO (ABM PERSISTENTE) ---")
+            print("1. Alta de canción")
+            print("2. Modificar canción por ID")
+            print("3. Baja de canción por ID")
+            sub_abm = input("Seleccione una opción: ").strip()
+
+            try:
+                catalogo = biblioteca.obtener_catalogo()
+                if not RUTA_BIN.exists():
+                    guardar_binario(RUTA_BIN, catalogo)
+
+                if sub_abm == "1":
+                    nuevo_id = int(input("ID: ").strip())
+                    if biblioteca.buscar_por_id(nuevo_id):
+                        print("\nError: Ya existe una canción con ese ID.")
+                        continue
+                    titulo = input("Título: ").strip()
+                    artista = input("Artista: ").strip()
+                    album = input("Álbum: ").strip()
+                    genero = input("Género: ").strip()
+                    anio = int(input("Año: ").strip())
+                    duracion = int(input("Duración (seg): ").strip())
+
+                    nueva = Cancion(nuevo_id, titulo, artista, album, genero, anio, duracion)
+                    biblioteca.agregar_cancion(nueva)
+                    alta_binario(RUTA_BIN, nueva)
+                    guardar_texto(RUTA_TXT, catalogo_a_filas(biblioteca.obtener_catalogo()), ENCABEZADO_ESPERADO)
+                    print("\nCanción agregada y persistida en .txt y .bin.")
+
+                elif sub_abm == "2":
+                    id_mod = int(input("ID de canción a modificar: ").strip())
+                    pos = posicion_del_id(catalogo, id_mod)
+                    cancion = biblioteca.buscar_por_id(id_mod)
+
+                    nuevo_titulo = input(f"Nuevo título [{cancion.titulo}]: ").strip()
+                    nuevo_artista = input(f"Nuevo artista [{cancion.artista}]: ").strip()
+                    if nuevo_titulo:
+                        cancion.titulo = nuevo_titulo
+                    if nuevo_artista:
+                        cancion.artista = nuevo_artista
+
+                    actualizar_registro(RUTA_BIN, pos, cancion)
+                    guardar_texto(RUTA_TXT, catalogo_a_filas(catalogo), ENCABEZADO_ESPERADO)
+                    print(f"\nRegistro en posición {pos} actualizado por acceso directo.")
+
+                elif sub_abm == "3":
+                    id_baja = int(input("ID de canción a eliminar: ").strip())
+                    pos = posicion_del_id(catalogo, id_baja)
+                    biblioteca.eliminar_cancion(id_baja)
+                    baja_binario(RUTA_BIN, pos)
+                    guardar_texto(RUTA_TXT, catalogo_a_filas(biblioteca.obtener_catalogo()), ENCABEZADO_ESPERADO)
+                    print("\nCanción eliminada y archivos actualizados.")
+
+                else:
+                    print("\nSubopción no válida.")
+
+            except (ValueError, ItemNoEncontradoError, ArchivoInvalidoError) as e:
+                print(f"\nError: {e}")
+
+        elif opcion == "13":
+            print("\n--- PERSISTENCIA (.TXT Y .BIN) ---")
+            print("a) Cargar catálogo desde .txt")
+            print("b) Guardar catálogo en .txt")
+            print("c) Guardar catálogo en binario (.bin)")
+            print("d) Cargar catálogo desde binario (.bin)")
+            sub_arch = input("Seleccione una subopción: ").strip().lower()
+
+            try:
+                if sub_arch == "a":
+                    filas = cargar_texto(RUTA_TXT)
+                    biblioteca.cargar_desde_filas(filas)
+                    print(f"\nCatálogo cargado desde .txt: {len(filas)} canciones.")
+
+                elif sub_arch == "b":
+                    guardar_texto(RUTA_TXT, catalogo_a_filas(biblioteca.obtener_catalogo()), ENCABEZADO_ESPERADO)
+                    print("\nCatálogo guardado en data/canciones.txt.")
+
+                elif sub_arch == "c":
+                    guardar_binario(RUTA_BIN, biblioteca.obtener_catalogo())
+                    print("\nCatálogo guardado en data/canciones.bin.")
+
+                elif sub_arch == "d":
+                    ruta_custom = input("Ruta .bin (Enter para data/canciones.bin): ").strip()
+                    ruta_objetivo = ruta_custom if ruta_custom else RUTA_BIN
+                    lista_enlazada = cargar_binario(ruta_objetivo, Cancion)
+                    biblioteca.establecer_catalogo(lista_enlazada)
+                    print(f"\nCatálogo cargado desde binario: {lista_enlazada.tamanio()} canciones.")
+
+                else:
+                    print("\nSubopción no válida.")
+
+            except ArchivoInvalidoError as e:
+                print(f"\nArchivo inválido: {e}")
+
+        elif opcion == "14":
             print("\n¡Gracias por usar la Biblioteca Musical!")
             break
-        
 
         else:
             print("\n Opción no válida. Ingrese un número de la lista.")
