@@ -10,7 +10,6 @@ ENCABEZADO_ESPERADO = ["id", "titulo", "artista", "album", "genero", "anio", "du
 
 
 def cargar_texto(ruta=RUTA_TXT):
-    """Lee un .txt secuencial y devuelve una lista de dicts. Lanza ArchivoInvalidoError si falla."""
     path = Path(ruta)
 
     if not path.exists():
@@ -20,14 +19,12 @@ def cargar_texto(ruta=RUTA_TXT):
     with open(path, mode="r", encoding="utf-8", newline="") as archivo:
         lector = csv.DictReader(archivo)
 
-        
         if not lector.fieldnames or list(lector.fieldnames) != ENCABEZADO_ESPERADO:
             raise ArchivoInvalidoError(
                 f"Encabezado inválido. Se esperaba {ENCABEZADO_ESPERADO}, se recibió {lector.fieldnames}"
             )
 
         for num_linea, fila in enumerate(lector, start=2):
-           
             if None in fila or None in fila.values():
                 raise ArchivoInvalidoError(
                     f"Línea {num_linea} rota: cantidad de campos incorrecta."
@@ -38,7 +35,6 @@ def cargar_texto(ruta=RUTA_TXT):
 
 
 def guardar_texto(ruta, filas, encabezado=ENCABEZADO_ESPERADO):
-    """Guarda el catálogo completo en texto simple (.txt) con encabezado."""
     path = Path(ruta)
 
     with open(path, mode="w", encoding="utf-8", newline="") as archivo:
