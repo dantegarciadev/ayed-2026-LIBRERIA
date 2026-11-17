@@ -1,66 +1,80 @@
-from src.dominio.canciones import obtener_catalogo
 from src.dominio.cancion import Cancion
+from src.persistencia.texto import cargar_texto, RUTA_TXT
+
 
 class Biblioteca:
-    """Gestiona la colección del catálogo incluyendo las relaciones de versiones."""
+    def __init__(self, ruta_txt=RUTA_TXT):
+        self.catalogo = []
+        self.cargar_desde_filas(cargar_texto(ruta_txt))
 
-    def __init__(self):
-        # Convertimos la lista de diccionarios de canciones.py en Objetos Cancion
+        self.versiones_map = {
+            1: [62],
+            12: [13],
+            19: [63],
+            31: [66],
+            32: [33],
+            37: [67],
+            47: [48],
+            51: [52],
+            54: [65],
+            55: [64],
+            61: [16],
+        }
+
+    def cargar_desde_filas(self, filas):
         self.catalogo = [
             Cancion(
-                c["id"], c["titulo"], c["artista"], 
-                c["album"], c["genero"], c["anio"], c["duracion_seg"]
+                int(c["id"]),
+                c["titulo"],
+                c["artista"],
+                c["album"],
+                c["genero"],
+                int(c["anio"]),
+                int(c["duracion_seg"]),
             )
-            for c in obtener_catalogo()
+            for c in filas
         ]
-        
-        # Diccionario de versiones: id_cancion -> lista de ids de sus versiones derivadas
-        self.versiones_map = {
-            1: [62],    # De Musica Ligera -> Live 
-            12: [13],   # Jijiji -> Live 
-            19: [63],   # Flaca -> Live 
-            31: [66],   # Blank Space -> Cover 
-            32: [33],   # Bohemian Rhapsody -> Live 
-            37: [67],   # Get Lucky -> Remix
-            47: [48],   # Wonderwall -> Live
-            51: [52],   # Billie Jean -> Remix
-            54: [65],   # Yellow -> Live
-            55: [64],   # Creep -> Live
-            61: [16],   # Gracias a la Vida -> Cover 
-        }
+
+    def establecer_catalogo(self, nueva_coleccion):
+        self.catalogo = list(nueva_coleccion)
 
     def obtener_catalogo(self):
         return self.catalogo
 
+    def agregar_cancion(self, cancion):
+        self.catalogo.append(cancion)
+
+    def eliminar_cancion(self, id_cancion):
+        for i, c in enumerate(self.catalogo):
+            if str(c.id) == str(id_cancion):
+                del self.catalogo[i]
+                return True
+        return False
+
     def buscar_por_id(self, id_cancion):
-        """Busca una canción comparando ambos IDs como string para evitar fallos de tipo."""
         for c in self.catalogo:
             if str(c.id) == str(id_cancion):
                 return c
         return None
 
     def buscar_versiones_directas(self, id_cancion):
-        """Busca versiones directas asegurando coincidencia de tipo entero o string."""
         try:
             clave_int = int(id_cancion)
             if clave_int in self.versiones_map:
                 return self.versiones_map[clave_int]
         except (ValueError, TypeError):
             pass
-        
+
         return self.versiones_map.get(str(id_cancion), [])
 
     def obtener_versiones_derivadas(self, id_cancion):
-        """Función recursiva para obtener derivados."""
         directas = self.buscar_versiones_directas(id_cancion)
-        
-        # CASO BASE: Si no tiene derivados
+
         if not directas:
             return []
 
         resultado = list(directas)
-        
-        # CASO RECURSIVO
+
         for v in directas:
             resultado += self.obtener_versiones_derivadas(v)
 
