@@ -252,6 +252,7 @@ def iniciar_cli():
 
             print("\nCatálogo ordenado y guardado.")
 
+       
         elif opcion == "12":
             print("\n--- GESTIÓN DE CATÁLOGO (ABM PERSISTENTE) ---")
             print("1. Alta de canción")
@@ -261,14 +262,21 @@ def iniciar_cli():
 
             try:
                 catalogo = biblioteca.obtener_catalogo()
+
+                if sub_abm not in ("1", "2", "3"):
+                    print("\nSubopción no válida.")
+                    continue
+
                 if not RUTA_BIN.exists():
                     guardar_binario(RUTA_BIN, catalogo)
 
                 if sub_abm == "1":
                     nuevo_id = int(input("ID: ").strip())
+
                     if biblioteca.buscar_por_id(nuevo_id):
                         print("\nError: Ya existe una canción con ese ID.")
                         continue
+
                     titulo = input("Título: ").strip()
                     artista = input("Artista: ").strip()
                     album = input("Álbum: ").strip()
@@ -276,40 +284,74 @@ def iniciar_cli():
                     anio = int(input("Año: ").strip())
                     duracion = int(input("Duración (seg): ").strip())
 
-                    nueva = Cancion(nuevo_id, titulo, artista, album, genero, anio, duracion)
-                    biblioteca.agregar_cancion(nueva)
+                    nueva = Cancion(
+                        nuevo_id, titulo, artista, album, genero, anio, duracion
+                    )
+
                     alta_binario(RUTA_BIN, nueva)
-                    guardar_texto(RUTA_TXT, catalogo_a_filas(biblioteca.obtener_catalogo()), ENCABEZADO_ESPERADO)
+                    biblioteca.agregar_cancion(nueva)
+
+                    guardar_texto(
+                        RUTA_TXT,
+                        catalogo_a_filas(biblioteca.obtener_catalogo()),
+                        ENCABEZADO_ESPERADO
+                    )
+
                     print("\nCanción agregada y persistida en .txt y .bin.")
 
                 elif sub_abm == "2":
                     id_mod = int(input("ID de canción a modificar: ").strip())
                     pos = posicion_del_id(catalogo, id_mod)
-                    cancion = biblioteca.buscar_por_id(id_mod)
+                    cancion = catalogo[pos]
 
-                    nuevo_titulo = input(f"Nuevo título [{cancion.titulo}]: ").strip()
-                    nuevo_artista = input(f"Nuevo artista [{cancion.artista}]: ").strip()
-                    if nuevo_titulo:
-                        cancion.titulo = nuevo_titulo
-                    if nuevo_artista:
-                        cancion.artista = nuevo_artista
+                    nuevo_titulo = input(
+                        f"Nuevo título [{cancion.titulo}]: "
+                    ).strip()
 
-                    actualizar_registro(RUTA_BIN, pos, cancion)
-                    guardar_texto(RUTA_TXT, catalogo_a_filas(catalogo), ENCABEZADO_ESPERADO)
-                    print(f"\nRegistro en posición {pos} actualizado por acceso directo.")
+                    nuevo_artista = input(
+                        f"Nuevo artista [{cancion.artista}]: "
+                    ).strip()
+
+                    titulo = nuevo_titulo if nuevo_titulo else cancion.titulo
+                    artista = nuevo_artista if nuevo_artista else cancion.artista
+
+                    modificada = Cancion(
+                        cancion.id,
+                        titulo,
+                        artista,
+                        cancion.album,
+                        cancion.genero,
+                        cancion.anio,
+                        cancion.duracion_seg
+                    )
+
+                    actualizar_registro(RUTA_BIN, pos, modificada)
+                    catalogo[pos] = modificada
+
+                    guardar_texto(
+                        RUTA_TXT,
+                        catalogo_a_filas(catalogo),
+                        ENCABEZADO_ESPERADO
+                    )
+
+                    print(f"\nRegistro en posición {pos} actualizado.")
 
                 elif sub_abm == "3":
                     id_baja = int(input("ID de canción a eliminar: ").strip())
                     pos = posicion_del_id(catalogo, id_baja)
-                    biblioteca.eliminar_cancion(id_baja)
+
                     baja_binario(RUTA_BIN, pos)
-                    guardar_texto(RUTA_TXT, catalogo_a_filas(biblioteca.obtener_catalogo()), ENCABEZADO_ESPERADO)
+                    biblioteca.eliminar_cancion(id_baja)
+
+                    guardar_texto(
+                        RUTA_TXT,
+                        catalogo_a_filas(biblioteca.obtener_catalogo()),
+                        ENCABEZADO_ESPERADO
+                    )
+
                     print("\nCanción eliminada y archivos actualizados.")
 
-                else:
-                    print("\nSubopción no válida.")
-
-            except (ValueError, ItemNoEncontradoError, ArchivoInvalidoError) as e:
+            except (ValueError, ItemNoEncontradoError, ArchivoInvalidoError, OSError) as e:
                 print(f"\nError: {e}")
 
         elif opcion == "13":
