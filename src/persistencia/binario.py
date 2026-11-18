@@ -1,3 +1,4 @@
+
 import struct
 from pathlib import Path
 
@@ -158,11 +159,11 @@ def cargar_binario(ruta, constructor_item=None):
                         f"Registro binario inválido: {error}"
                     ) from error
 
-                elemento = (
-                    constructor_item(**fila)
-                    if constructor_item
-                    else fila
-                )
+                if constructor_item:
+                    fila["id_cancion"] = fila.pop("id")
+                    elemento = constructor_item(**fila)
+                else:
+                    elemento = fila
 
                 catalogo.insertar_al_final(elemento)
 
