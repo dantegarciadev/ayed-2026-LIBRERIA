@@ -92,11 +92,50 @@ Mediciones (`time.perf_counter`):
 | Busqueda lineal | 260 | 0.000003000 | 
 | Búsqueda binaria | 26 | 0.000003200 |
 | Búsqueda binaria | 260 | 0.000002200 |
+
 ## 6. Persistencia (E5)
 
-- Layout del registro binario (campos, `struct`, anchos):
-- Header:
-- Cómo se actualiza un registro por posición:
+### Persistencia en texto
+
+Se utiliza un archivo CSV (`canciones.txt`) para almacenar el catálogo. La lectura se realiza mediante `csv.DictReader` y la escritura mediante `csv.DictWriter`. Se verifica que el encabezado coincida con los campos esperados y que cada fila tenga la cantidad correcta de datos.
+
+### Persistencia binaria
+
+Se utiliza el módulo `struct` para guardar registros de longitud fija.
+
+**Header:**
+
+- Formato: `struct.Struct("<4s 1s I")`
+- Magia: `AYED` (4 bytes).
+- Tema: `M` (1 byte).
+- Cantidad de registros: entero sin signo (4 bytes).
+- Tamaño total: 9 bytes.
+
+**Registro de canción:**
+
+Formato: `struct.Struct("<I 30s 25s 30s 12s 2H")`
+
+| Campo | Tipo | Tamaño |
+|---|---|---:|
+| ID | `I` | 4 bytes |
+| Título | `30s` | 30 bytes |
+| Artista | `25s` | 25 bytes |
+| Álbum | `30s` | 30 bytes |
+| Género | `12s` | 12 bytes |
+| Año | `H` | 2 bytes |
+| Duración en segundos | `H` | 2 bytes |
+| **Total** | | **105 bytes** |
+
+El prefijo `<` indica que los datos se almacenan en little-endian, sin alineación automática.
+
+### Actualización de un registro por posición
+
+Para modificar un registro se utiliza el método `seek()` del archivo binario. La posición se calcula mediante:
+
+`HEADER.size + posicion * FORMATO.size`
+
+De esta manera, se accede directamente al registro correspondiente sin necesidad de reescribir todo el archivo. Luego se utiliza `write()` para sobrescribir sus datos.
+
 
 ## 7. Reparto de trabajo (E6)
 
