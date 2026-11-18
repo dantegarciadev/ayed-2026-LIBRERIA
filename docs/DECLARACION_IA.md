@@ -11,7 +11,8 @@ Fecha de esta versión del archivo:
 | E3 | 04/10/2026 | Gemini | Diseño, código y docs | Implementación de `Playlist` en `playlist.py` (colección con tope), estructuras TADs (`ListaEnlazada`, `Pila`, `Cola`) | Adaptación de validaciones de ID, mensajes de error en CLI y redacción final de la documentación | Kain Samaniego |
 | E4 | 25/10/2026 | Gemini | Docs | Estructuración de la Sección 5 en `INFORME.md` (Tabla de complejidad teórica) | Revisión de las justificaciones de cotas $O(...)$ | Kain Samaniego |
 | E4 | 01/11/2026 | ChatGPT | Explicación, código, debug y docs | Fragmentos para integrar búsqueda y ordenamiento en el CLI, explicación de mediciones con `time.perf_counter`, explicación de complejidad y propuesta de filas P13–P16 | Check y revisión de las opciones del menú y nombres de parámetros  y actualización del informe | Eber Garcia |
-| E5 |  |  |  |  |  |  |
+| E5 | 17/11/2026 | ChatGPT | Explicación, código, debug y docs | Fragmentos de persistencia binaria en `binario.py`, ajustes del ABM en `cli.py` y redacción de la sección 6 de `INFORME.md` | Revisión de los formatos binarios, adaptación del código a la estructura del proyecto y verificación de las operaciones de persistencia | Kain Samaniego |
+
 | E6 |  |  |  |  |  |  |
 
 Compromiso: cualquiera del grupo puede explicar cualquier archivo del tag.
