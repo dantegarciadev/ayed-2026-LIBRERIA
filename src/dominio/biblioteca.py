@@ -1,5 +1,5 @@
 from src.dominio.cancion import Cancion
-from src.persistencia.texto import cargar_texto, RUTA_TXT
+from src.persistencia.texto import cargar_texto, RUTA_TXT, RUTA_VERSIONES
 
 
 class Biblioteca:
@@ -7,19 +7,16 @@ class Biblioteca:
         self.catalogo = []
         self.cargar_desde_filas(cargar_texto(ruta_txt))
 
-        self.versiones_map = {
-            1: [62],
-            12: [13],
-            19: [63],
-            31: [66],
-            32: [33],
-            37: [67],
-            47: [48],
-            51: [52],
-            54: [65],
-            55: [64],
-            61: [16],
-        }
+        self.versiones_map = {}
+        filas_versiones = cargar_texto(
+            RUTA_VERSIONES,
+            ["cancion_id", "version_de_id", "tipo"],
+        )
+
+        for fila in filas_versiones:
+            origen = int(fila["version_de_id"])
+            version = int(fila["cancion_id"])
+            self.versiones_map.setdefault(origen, []).append(version)
 
     def cargar_desde_filas(self, filas):
         self.catalogo = [
