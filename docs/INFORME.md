@@ -1,45 +1,39 @@
 # Informe del TP
 
 ## 1. Grupo y tema
-
+- **Integrantes:** Eber Garcia y Kain Samaniego.
 - **Tema:** Biblioteca Musical
 - **Por qué lo eligieron:** Elegimos este tema porque, a diferencia de opciones más comunes como Pokédex, nos pareció un dominio con mayor flexibilidad. Una colección de música nos permite experimentar con diversas funciones y atributos variados (artistas, géneros, duraciones). Además, resulta muy práctico para modelar  las estructuras como, listas de reproducción, historial (pilas) y colas de reproducción.
 
 
 ## 2. Modelo
 
-Un ítem del catálogo representa una canción individual definida dentro del módulo de dominio, la cual es representada como un diccionario de Python con los campos `id`, `titulo`, `artista`, `album`, `genero`, `anio` y `duracion_seg`.
+Un ítem del catálogo es un objeto de la clase `Cancion`, con los atributos
+`id`, `titulo`, `artista`, `album`, `genero`, `anio` y `duracion_seg`.
 
 ### Mutabilidad
 
-- **Inmutables:**
- - `id` (str/int): Identificador único de la canción. Se define inmutable para garantizar la integridad referencial y evitar que la clave primaria del ítem cambie accidentalmente, lo que rompería las búsquedas.
- - `titulo`, `artista`, `album`, `genero` (str): Las cadenas de texto son inmutables en Python. Elegirlas así asegura la integridad de los metadatos base, evitando efectos secundarios o modificaciones colaterales no deseadas en memoria durante la ejecución.
- - `anio`, `duracion_seg` (int): Tipos numéricos básicos e inmutables por definición del lenguaje, ideales para proteger los valores cuantitativos de la canción.
-- **Mutables:**
-  - `cancion` (dict): Diccionario dinámico que representa la entidad. Permite modificar atributos o corregir datos sin necesidad de recrear toda la estructura del tema en memoria.
-  - `catalogo` (list): Colección lineal mutable. Se elige una lista para permitir la inserción, eliminación y reordenamiento dinámico de los temas dentro del sistema.
+Los valores de tipo `str` e `int` son inmutables: una modificación implica
+asignar otro valor al atributo correspondiente.
+
+Los objetos `Cancion` son mutables porque sus atributos pueden reasignarse.
+El ABM mantiene el ID al modificar una canción y reemplaza el objeto del
+catálogo por uno nuevo con los datos actualizados. La clase no impide
+reasignar el ID directamente.
+
+El catálogo es una lista mutable de objetos `Cancion`. Permite agregar,
+eliminar, reemplazar y ordenar sus elementos.
+
 ### Relación entre componentes del sistema
 
-```text
-+-------------------------------------------------------------+
-|                      BIBLIOTECA MUSICAL                     |
-+-------------------------------------------------------------+
-                               |
-                               v
-               +-------------------------------+
-               |      Catálogo (list/dict)     |
-               +-------------------------------+
-                               |
-        +----------------------+----------------------+
-        |                      |                      |
-        v                      v                      v
-+---------------+      +---------------+      +---------------+
-| Colección     |      | Historial     |      | Cola de       |
-| Principal     |      | (Pila - TADS) |      | Reproducción  |
-| (Listas)      |      +---------------+      | (Cola - TADS) |
-+---------------+                             +---------------+
-```
+- `Biblioteca` administra el catálogo y las relaciones entre canciones
+  utilizadas por la operación recursiva.
+- `Playlist` almacena canciones seleccionadas en una `ListaEnlazada`,
+  con un máximo de seis elementos.
+- `Pila` mantiene el historial de reproducción con comportamiento LIFO.
+- `Cola` mantiene las canciones pendientes con comportamiento FIFO.
+- La persistencia guarda y recupera el catálogo en texto y binario.
+
 ## 3. Recursión (E2)
 
 **Función:** `obtener_versiones_derivadas(id_cancion)`
@@ -83,6 +77,11 @@ Un ítem del catálogo representa una canción individual definida dentro del m�
 | **Ordenar por selección** | $O(n^2)$ | $O(n^2)$ | $O(1)$ | Para cada posición, recorre los elementos restantes buscando el mínimo. Realiza una cantidad cuadrática de comparaciones, incluso si el catálogo ya está ordenado, y como máximo un intercambio por posición. |
 | **Ordenar por inserción** | $O(n^2)$ | $O(n)$ | $O(1)$ | Si ya está ordenada hace 1 sola comparación por elemento ($O(n)$); si está al revés, tiene que desplazar todo hacia atrás ($O(n^2)$). |
 | **Ver detalle de un ítem** | $O(n)$ | $O(1)$ | $O(1)$ | Recorre la colección hasta encontrar la coincidencia por ID. |
+
+Las cotas de búsqueda y ordenamiento corresponden a los algoritmos sobre
+el catálogo en memoria. La opción de búsqueda binaria del CLI también
+ordena previamente y guarda los archivos, por lo que su costo total
+incluye esas operaciones.
 
 Mediciones (`time.perf_counter`):
 
@@ -136,9 +135,36 @@ Para modificar un registro se utiliza el método `seek()` del archivo binario. L
 
 De esta manera, se accede directamente al registro correspondiente sin necesidad de reescribir todo el archivo. Luego se utiliza `write()` para sobrescribir sus datos.
 
+### Alta y baja persistentes
+
+El alta agrega un registro al final del archivo binario y actualiza la
+cantidad de registros del header.
+
+La baja elimina el registro indicado por su posición y reescribe el
+archivo con los registros restantes, actualizando también el header.
+
+El archivo de texto se reescribe con el catálogo completo después
+de cada alta, baja o modificación.
+
+### Sincronización
+
+Después de ordenar el catálogo, incluso para realizar una búsqueda
+binaria, o de cargarlo desde texto o binario, se guardan ambos formatos.
+Así, el orden de los registros del binario coincide con el catálogo
+en memoria y permite actualizar o eliminar por posición.
+
+### Cadenas de longitud fija
+
+Las cadenas se codifican en UTF-8. Si superan el ancho del campo,
+se recortan sin cortar un carácter multibyte. Si son más cortas,
+se completan con bytes nulos.
+
+Esta representación puede perder parte de los textos largos.
+Por ejemplo, el campo artista admite hasta 25 bytes.
 
 ## 7. Reparto de trabajo (E6)
 
 | Integrante | Qué hizo | Qué puede defender |
 | --- | --- | --- |
-|  |  |  |
+| Eber Garcia | Organización inicial del repositorio e integración de entregas. Integración de búsquedas y ordenamientos en el CLI, corrección de la búsqueda binaria y de parámetros de los ordenamientos. Incorporación de mediciones de rendimiento y actualización de los casos de prueba de E4. Revisión y actualización del informe para E6. | Búsqueda lineal y binaria, requisito de orden previo, ordenamiento por selección e inserción, integración de los algoritmos con el menú, complejidad temporal y mediciones con time.perf_counter. |
+| Kain Samaniego | Desarrollo del menú inicial y de las clases del dominio. Implementación de la operación recursiva de versiones, ListaEnlazada, Pila, Cola y Playlist con tope. Implementación inicial de búsquedas y ordenamientos. Desarrollo de persistencia en texto y binario, actualización por posición e integración del ABM persistente. Documentación y actualización del protocolo de pruebas de esas funcionalidades. | Modelo de Cancion y Biblioteca, caso base y caso recursivo, invariantes de los TADs, iterador, comportamiento LIFO y FIFO, control del tope, lectura y escritura de archivos, layout binario con struct, cálculo del seek y ABM persistente. |

@@ -208,6 +208,9 @@ def iniciar_cli():
 
             elif metodo == "2":
                 ordenar_insercion(catalogo, lambda c: c.titulo)
+                guardar_texto(RUTA_TXT, catalogo_a_filas(catalogo), ENCABEZADO_ESPERADO)
+                guardar_binario(RUTA_BIN, catalogo)
+
                 print("\nCatálogo ordenado por título; usando búsqueda binaria.")
                 cancion = busqueda_binaria(catalogo, titulo, lambda c: c.titulo)
 
@@ -247,8 +250,7 @@ def iniciar_cli():
                 continue
 
             guardar_texto(RUTA_TXT, catalogo_a_filas(catalogo), ENCABEZADO_ESPERADO)
-            if RUTA_BIN.exists():
-                guardar_binario(RUTA_BIN, catalogo)
+            guardar_binario(RUTA_BIN, catalogo)
 
             print("\nCatálogo ordenado y guardado.")
 
@@ -366,6 +368,11 @@ def iniciar_cli():
                 if sub_arch == "a":
                     filas = cargar_texto(RUTA_TXT)
                     biblioteca.cargar_desde_filas(filas)
+
+                    catalogo = biblioteca.obtener_catalogo()
+                    guardar_texto(RUTA_TXT, catalogo_a_filas(catalogo), ENCABEZADO_ESPERADO)
+                    guardar_binario(RUTA_BIN, catalogo)
+
                     print(f"\nCatálogo cargado desde .txt: {len(filas)} canciones.")
 
                 elif sub_arch == "b":
@@ -381,6 +388,11 @@ def iniciar_cli():
                     ruta_objetivo = ruta_custom if ruta_custom else RUTA_BIN
                     lista_enlazada = cargar_binario(ruta_objetivo, Cancion)
                     biblioteca.establecer_catalogo(lista_enlazada)
+
+                    catalogo = biblioteca.obtener_catalogo()
+                    guardar_texto(RUTA_TXT, catalogo_a_filas(catalogo), ENCABEZADO_ESPERADO)
+                    guardar_binario(RUTA_BIN, catalogo)
+
                     print(f"\nCatálogo cargado desde binario: {lista_enlazada.tamanio()} canciones.")
 
                 else:

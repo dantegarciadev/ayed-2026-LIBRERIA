@@ -2,7 +2,7 @@
 
 Actualizar **en cada entrega**. Si no usaron IA, dejar una fila que lo diga. No declarar cuando sí se usó anula la entrega.
 
-Fecha de esta versión del archivo:
+Fecha de esta versión del archivo: 22/11/2026
 
 | Entrega | Fecha | Herramienta (ChatGPT, Cursor, Copilot, otra) | Para qué (diseño, código, debug, docs) | Qué pegaron o generaron | Qué reescribieron / revisaron a mano | Integrante |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -13,6 +13,6 @@ Fecha de esta versión del archivo:
 | E4 | 01/11/2026 | ChatGPT | Explicación, código, debug y docs | Fragmentos para integrar búsqueda y ordenamiento en el CLI, explicación de mediciones con `time.perf_counter`, explicación de complejidad y propuesta de filas P13–P16 | Check y revisión de las opciones del menú y nombres de parámetros  y actualización del informe | Eber Garcia |
 | E5 | 17/11/2026 | ChatGPT | Explicación, código, debug y docs | Fragmentos de persistencia binaria en `binario.py`, ajustes del ABM en `cli.py` y redacción de la sección 6 de `INFORME.md` | Revisión de los formatos binarios, adaptación del código a la estructura del proyecto y verificación de las operaciones de persistencia | Kain Samaniego |
 
-| E6 |  |  |  |  |  |  |
+| E6 | 22/11/2026 | ChatGPT | Revisión de código, diagnóstico de errores y documentación | Lista de pendientes según la guía E5/E6, propuesta de adaptación del catálogo a ListaEnlazada y textos para actualizar el informe y el reparto de trabajo basados en el historial de Git | Revisión de las propuestas y edición manual de docs/INFORME.md para describir el modelo, la mutabilidad, la complejidad, la persistencia y el reparto de trabajo | Eber Garcia |
 
 Compromiso: cualquiera del grupo puede explicar cualquier archivo del tag.
